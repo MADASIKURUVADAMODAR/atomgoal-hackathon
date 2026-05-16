@@ -1,3 +1,28 @@
+## 📌 Problem Statement
+
+Organizations struggle with fragmented goal tracking through spreadsheets and manual workflows. AtomGoal provides a centralized Goal Setting & Tracking Portal with Employee, Manager, and Admin workflows.
+
+---
+
+## ✨ Key Features
+
+- Employee Goal Creation & Submission
+- Manager Approval Workflow
+- Admin Portal & Analytics
+- Quarterly Check-ins
+- Goal Weightage Validation
+- Shared Goals
+- Role-Based Authentication
+- Progress Tracking Dashboard
+
+---
+
+## 🛠️ Tech Stack
+
+Frontend: Next.js + TailwindCSS  
+Backend: Express.js + JWT  
+Database: SQLite
+
 # AtomGoal – Smart Goal Setting & Tracking Portal
 
 A comprehensive full-stack solution for organizational goal management.
