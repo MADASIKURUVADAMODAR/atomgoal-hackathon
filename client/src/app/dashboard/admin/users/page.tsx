@@ -27,22 +27,18 @@ export default function UserManagementPage() {
     type HierarchyNode = {
         id: string;
         name: string;
-        role: string;
-        department: string;
-        manager_id: string | null;
         children?: HierarchyNode[];
     };
 
-    const buildHierarchy = (parentId: string | null = null): HierarchyNode[] => {
-        return (users as any[])
-            .filter(u => u.manager_id === parentId)
-            .map(u => ({
+    const buildHierarchy = (
+        parentId: string | null = null
+    ): HierarchyNode[] => {
+        return users
+            .filter((u: any) => u.manager_id === parentId)
+            .map((u: any) => ({
                 id: u.id,
                 name: u.name,
-                role: u.role,
-                department: u.department,
-                manager_id: u.manager_id,
-                children: buildHierarchy(u.id)
+                children: buildHierarchy(u.id),
             }));
     };
 
@@ -54,7 +50,7 @@ export default function UserManagementPage() {
                 </div>
                 <div>
                     <p className="text-sm font-bold text-slate-200">{node.name}</p>
-                    <p className="text-[10px] text-slate-500 uppercase font-bold">{node.role} • {node.department}</p>
+                    <p className="text-[10px] text-slate-500 uppercase font-bold">Member</p>
                 </div>
             </div>
             {node.children && node.children.length > 0 && (
