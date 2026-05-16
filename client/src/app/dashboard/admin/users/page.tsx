@@ -24,8 +24,21 @@ export default function UserManagementPage() {
         fetchUsers();
     }, []);
 
-    const buildHierarchy = (parentId: string | null = null) => {
-        return users
+    interface User {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+        department: string;
+        manager_id: string | null;
+    }
+
+    interface UserHierarchy extends User {
+        reports: UserHierarchy[];
+    }
+
+    const buildHierarchy = (parentId: string | null = null): UserHierarchy[] => {
+        return (users as User[])
             .filter(u => u.manager_id === parentId)
             .map(u => ({
                 ...u,
@@ -33,7 +46,7 @@ export default function UserManagementPage() {
             }));
     };
 
-    const HierarchyNode = ({ node, depth = 0 }: { node: any, depth?: number }) => (
+    const HierarchyNode = ({ node, depth = 0 }: { node: UserHierarchy, depth?: number }) => (
         <div className="ml-8 mt-2">
             <div className={`flex items-center gap-3 p-3 bg-slate-900/50 border border-slate-800 rounded-lg ${depth === 0 ? 'border-indigo-500/50' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold">
@@ -124,7 +137,7 @@ export default function UserManagementPage() {
                 </Card>
             ) : (
                 <div className="space-y-6">
-                    {buildHierarchy(null).map((root: any) => (
+                    {buildHierarchy(null).map((root: UserHierarchy) => (
                         <div key={root.id} className="p-6 bg-slate-950 rounded-xl border border-slate-900">
                             <HierarchyNode node={root} />
                         </div>
