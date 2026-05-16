@@ -24,29 +24,29 @@ export default function UserManagementPage() {
         fetchUsers();
     }, []);
 
-    interface User {
+    type HierarchyNode = {
         id: string;
         name: string;
-        email: string;
         role: string;
         department: string;
         manager_id: string | null;
-    }
+        children?: HierarchyNode[];
+    };
 
-    interface UserHierarchy extends User {
-        reports: UserHierarchy[];
-    }
-
-    const buildHierarchy = (parentId: string | null = null): UserHierarchy[] => {
-        return (users as User[])
+    const buildHierarchy = (parentId: string | null = null): HierarchyNode[] => {
+        return (users as any[])
             .filter(u => u.manager_id === parentId)
             .map(u => ({
-                ...u,
-                reports: buildHierarchy(u.id)
+                id: u.id,
+                name: u.name,
+                role: u.role,
+                department: u.department,
+                manager_id: u.manager_id,
+                children: buildHierarchy(u.id)
             }));
     };
 
-    const HierarchyNode = ({ node, depth = 0 }: { node: UserHierarchy, depth?: number }) => (
+    const OrgNode = ({ node, depth = 0 }: { node: HierarchyNode, depth?: number }) => (
         <div className="ml-8 mt-2">
             <div className={`flex items-center gap-3 p-3 bg-slate-900/50 border border-slate-800 rounded-lg ${depth === 0 ? 'border-indigo-500/50' : ''}`}>
                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold">
@@ -57,10 +57,10 @@ export default function UserManagementPage() {
                     <p className="text-[10px] text-slate-500 uppercase font-bold">{node.role} • {node.department}</p>
                 </div>
             </div>
-            {node.reports && node.reports.length > 0 && (
+            {node.children && node.children.length > 0 && (
                 <div className="border-l-2 border-slate-800 ml-4 pl-4 space-y-2">
-                    {node.reports.map((child: any) => (
-                        <HierarchyNode key={child.id} node={child} depth={depth + 1} />
+                    {node.children.map((child: HierarchyNode) => (
+                        <OrgNode key={child.id} node={child} depth={depth + 1} />
                     ))}
                 </div>
             )}
@@ -137,9 +137,9 @@ export default function UserManagementPage() {
                 </Card>
             ) : (
                 <div className="space-y-6">
-                    {buildHierarchy(null).map((root: UserHierarchy) => (
+                    {buildHierarchy(null).map((root: HierarchyNode) => (
                         <div key={root.id} className="p-6 bg-slate-950 rounded-xl border border-slate-900">
-                            <HierarchyNode node={root} />
+                            <OrgNode node={root} />
                         </div>
                     ))}
                 </div>
